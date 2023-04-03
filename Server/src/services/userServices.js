@@ -30,7 +30,8 @@ let getInfoUser = (userId) => {
                 id: userId
             },
             attributes: {
-                include: [[Sequelize.col('Role.text'), 'roleText']]
+                include: [[Sequelize.col('Role.text'), 'role_text']],
+                exclude: ['createdAt', 'updatedAt']
             },
             include: [
             {

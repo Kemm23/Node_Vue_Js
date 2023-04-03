@@ -9,8 +9,8 @@ module.exports = {
       phone_number: '0313123',
       address: 'HN',
       role_id: 1,
-      created_at: new Date(),
-      updated_at: new Date()
+      createdAt: new Date(),
+      updatedAt: new Date()
     }]);
   },
 
