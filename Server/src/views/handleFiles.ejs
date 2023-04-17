@@ -1,18 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-      <title>Node js upload csv file to MySQL database - Tutsmake.com</title>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-    </head>
-    <body>
-      <h1>Node js upload csv file to MySQL database - Tutsmake.com</h1>
-      <form id="form_file" action="/api/uploadfile" enctype="multipart/form-data" method="post">
-        <input type="file" name="uploadfile" accept='csv' >
-        <input type="submit" value="Upload CSV">
-      </form>  
-    </body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
-    <script>
-    </script>
+  <head>
+    <title>Node js upload csv file to MySQL database - Tutsmake.com</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <h1>Node js upload csv file to MySQL database - Tutsmake.com</h1>
+    <form id="form_file" action="/api/uploadFileImg" enctype="multipart/form-data" method="post">
+      <input type="file" name="uploadfile" accept="image/*"/>
+      <input type="submit" value="Upload CSV" />
+    </form>
+    <button id="download-csv-btn">Download CSV</button>
+  </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+  <script>
+    const downloadCsvBtn = document.getElementById("download-csv-btn")
+
+    downloadCsvBtn.addEventListener("click", async () => {
+      try {
+        // fetch the CSV data from the backend
+        const url = 'http://localhost:8000/api/exportFile';
+          
+        const link = document.createElement("a");
+        link.href = url;
+
+        const fileName = 'user.csv';
+        link.setAttribute("download", fileName);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      } catch (error) {
+        console.error(error)
+      }
+    })
+  </script>
 </html>

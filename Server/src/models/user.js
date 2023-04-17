@@ -14,16 +14,21 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Order, {foreignKey:'user_id'})
     }
   }
-  User.init({
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
-    name: DataTypes.STRING,
-    address: DataTypes.STRING,
-    phone_number: DataTypes.STRING,
-    role_id: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'User',
-  });
+  User.init(
+    {
+      email: DataTypes.STRING,
+      password: DataTypes.STRING,
+      name: DataTypes.STRING,
+      address: DataTypes.STRING,
+      phone_number: DataTypes.STRING,
+      role_id: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: "User",
+      paranoid: true,
+      timestamps: true
+    }
+  )
   return User;
 };

@@ -1,0 +1,4 @@
+﻿id,email,name,address,phone_number,role_id,deletedAt
+1,kem@gmail.com1,Kemm23,Ha Noi,12312345,1,
+2,kem@gmail.com2,Kemm23,Ha Noi,12312345,1,
+4,kem@gmail.com3,Kemm23,Ha Noi,12312345,1,

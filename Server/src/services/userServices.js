@@ -1,58 +1,135 @@
 import db from '../models'
-const { Sequelize } = require("sequelize")
+import bcrypt from 'bcryptjs'
 
-let getUserData = (userEmail, userPassword) => {
+let checkEmailUser = (emailLogin) => {
     return new Promise(async(resolve, reject) => {
         try {
-            let user = await db.User.findOne({where: {
-                email: userEmail
-            }})
-            if (!user) {
-                resolve(false)
-            }
-            let checkPass = Boolean(user.password == userPassword)
-            if (checkPass) {
-                resolve(user)
-            } else {
-                resolve(false)
-            }
-        } catch(e) {
+        let data = await db.User.findOne({
+            where: {
+                email: emailLogin
+            },
+            attributes: ['email']
+        })
+        if (data) {
+            resolve(true)
+        } else {
+            resolve(false)
+        }
+        } catch (e) {
             reject(e)
         }
     })
-} 
+}
 
-let getInfoUser = (userId) => {
-    return new Promise(async(resolve, reject) => {
+let checkPasswordUser = (emailLogin, passwordLogin) => {
+    return new Promise(async (resolve, reject) => {
         try {
-            let result = await db.User.findOne({
-            where: {
-                id: userId
-            },
-            attributes: {
-                include: [[Sequelize.col('Role.text'), 'role_text']],
-                exclude: ['createdAt', 'updatedAt']
-            },
-            include: [
-            {
-                model: db.Role,
-                attributes: [],
+            let dataUser = await db.User.findOne({
+                where: {
+                    email: emailLogin
+                },
+                attributes: {
+                    exclude: ['createdAt', 'updatedAt']
+                }
+            })
+            let isValidPassword = await bcrypt.compare(passwordLogin, dataUser.password)
+            if (!dataUser || !isValidPassword) {
+                resolve(false)
             }
-            ],
-            raw: true,
-            nest: true,
+            resolve(dataUser)
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+let handleRegister = (data) => {
+    return new Promise(async (resolve, reject) =>{
+        try {
+            let newPassword = await bcrypt.hash(data.password, 10)
+            let result = await db.User.create({...data, password: newPassword})
+            if (!result) {
+                resolve(false)
+            }
+            resolve(result)
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+let handleGetListUser = () => {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let result = await db.User.findAll({
+            attributes: {
+                exclude: ['password', 'createdAt', 'updatedAt']
+            }
         })
         if (!result) {
             resolve(false)
         }
+        resolve(result)
+      } catch (e) {
+        reject(e)
+      }
+    })
+} 
+
+let handleGetUser = (userId) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            let result = await db.User.findByPk(userId, {
+                attributes: {
+                    exclude: ['createdAt', 'updatedAt', 'password']
+                }
+            })
+            if (!result) {
+                resolve(false)
+            }
+            resolve (result)
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+let handleDeleteUser = (userId) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            let result = await db.User.destroy({
+                where: {
+                    id: userId
+                }
+            })
             resolve(result)
-        } catch(e) {
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+let handleUpdateUser = (data, userId) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            let dataDB = await db.User.update(data, {
+                where: {
+                    id: userId
+                }
+            })
+            resolve(dataDB)
+        } catch (e) {
             reject(e)
         }
     })
 }
 
 export default {
-    getUserData,
-    getInfoUser
+  handleGetListUser,
+  handleGetUser,
+  checkEmailUser,
+  handleRegister,
+  checkPasswordUser,
+  handleDeleteUser,
+  handleUpdateUser
 }

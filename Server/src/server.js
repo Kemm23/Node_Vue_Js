@@ -3,7 +3,6 @@ import bodyParser from 'body-parser'
 import initApiRoutes from './routes/api'
 import configViewEngine from './config/viewEngine'
 import initWebRoutes from './routes/web'
-
 require('dotenv').config()
 
 let app = express()
